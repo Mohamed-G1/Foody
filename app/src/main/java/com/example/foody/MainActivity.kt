@@ -3,7 +3,6 @@ package com.example.foody
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -33,7 +32,10 @@ class MainActivity : AppCompatActivity() {
 
 
     }
-
+/*
+* This method is called whenever the user chooses to navigate Up within your application's activity
+*  hierarchy from the action bar.
+* */
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
