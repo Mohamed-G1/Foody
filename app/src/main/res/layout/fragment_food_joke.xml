@@ -5,7 +5,7 @@
 
     android:background="@color/lightGray"
     android:layout_height="match_parent"
-    tools:context=".FoodJokeFragment">
+    tools:context=".ui.fragments.foodjoke.FoodJokeFragment">
 
     <TextView
         android:layout_width="match_parent"
