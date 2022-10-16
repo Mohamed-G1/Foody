@@ -1,7 +1,7 @@
-package com.example.di
+package com.example.foody.di
 
-import com.example.data.network.FoodApi
-import com.example.utils.Constans.Companion.BASE_URL
+import com.example.foody.data.network.FoodApi
+import com.example.foody.utils.Constans.Companion.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

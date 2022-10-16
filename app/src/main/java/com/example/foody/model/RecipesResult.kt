@@ -3,7 +3,7 @@ package com.example.foody.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Result(
+data class RecipesResult(
     @SerializedName("aggregateLikes")
     val aggregateLikes: Int,
     @SerializedName("cheap")

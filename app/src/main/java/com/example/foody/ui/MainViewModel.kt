@@ -7,9 +7,9 @@ import android.net.NetworkCapabilities
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.data.Repository
+import com.example.foody.data.Repository
 import com.example.foody.model.FoodRecipeModel
-import com.example.utils.NetworkResult
+import com.example.foody.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Response
