@@ -11,14 +11,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.foody.BuildConfig
 import com.example.foody.R
 import com.example.foody.adapter.RecipesAdapter
 import com.example.foody.ui.MainViewModel
-import com.example.foody.utils.Constans.Companion.API_KEY
 import com.example.foody.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_recipes.view.*
-import kotlinx.android.synthetic.main.recipes_row_layout.view.*
 
 @AndroidEntryPoint
 class RecipesFragment : Fragment() {
@@ -67,7 +66,7 @@ class RecipesFragment : Fragment() {
     private fun applyQueries(): HashMap<String, String> {
         val queries: HashMap<String, String> = HashMap()
         queries["number"] = "50"
-        queries["apiKey"] = API_KEY
+        queries["apiKey"] = BuildConfig.API_KEY
         queries["type"] = "snack"
         queries["diet"] = "vegan"
         queries["addRecipeInformation"] = "true"
