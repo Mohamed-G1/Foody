@@ -1,6 +1,6 @@
-package com.example.data
+package com.example.foody.data
 
-import com.example.data.network.RemoteDataSource
+import com.example.foody.data.network.RemoteDataSource
 import javax.inject.Inject
 
 
