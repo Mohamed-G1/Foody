@@ -1,16 +1,38 @@
 package com.example.foody.bindingadapters
 
+import android.accounts.AuthenticatorDescription
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
+import androidx.navigation.findNavController
 import coil.load
 import com.example.foody.R
+import com.example.foody.model.RecipesResult
+import com.example.foody.ui.fragments.recipes.RecipesFragmentDirections
+import org.jsoup.Jsoup
 
 class RecipesRowBinding {
 
     companion object {
+
+
+        @BindingAdapter("onRecipesClickListener")
+        @JvmStatic
+        fun onRecipesClickListener(recipeRowLayout: ConstraintLayout, result: RecipesResult) {
+            recipeRowLayout.setOnClickListener {
+                try {
+                    val action =
+                        RecipesFragmentDirections.actionRecipesFragmentToDetailsActivity(result = result)
+                    recipeRowLayout.findNavController().navigate(action)
+                } catch (e: Exception) {
+                    Log.d("onRecipesClickListener", e.toString())
+                }
+            }
+        }
 
         @BindingAdapter("loadImageFromUrl")
         @JvmStatic
@@ -53,6 +75,16 @@ class RecipesRowBinding {
 
                     }
                 }
+            }
+        }
+
+        //todo this to parse the Html tags that appears when shows the data
+        @BindingAdapter("parseHtml")
+        @JvmStatic
+        fun parseHtml(textView: TextView, description: String?) {
+            if (description != null) {
+                val desc = Jsoup.parse(description).text()
+                textView.text = desc
             }
         }
     }
