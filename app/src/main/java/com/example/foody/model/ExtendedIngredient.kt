@@ -1,8 +1,12 @@
 package com.example.foody.model
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+
+@Parcelize
 data class ExtendedIngredient(
     @SerializedName("amount")
     val amount: Double,
@@ -16,4 +20,4 @@ data class ExtendedIngredient(
     val original: String,
     @SerializedName("unit")
     val unit: String
-)
+) : Parcelable

@@ -21,7 +21,6 @@ import com.example.foody.utils.NetworkListener
 import com.example.foody.utils.NetworkResult
 import com.example.foody.utils.observeOnce
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
