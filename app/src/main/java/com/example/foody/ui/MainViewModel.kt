@@ -4,13 +4,13 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.foody.data.Repository
+import com.example.foody.db.RecipesEntity
 import com.example.foody.model.FoodRecipeModel
 import com.example.foody.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
@@ -22,12 +22,25 @@ class MainViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
-    var recipesResponse: MutableLiveData<NetworkResult<FoodRecipeModel>> = MutableLiveData()
+    /** CACHE DB*/
+    val readRecipes: LiveData<List<RecipesEntity>> = repo.local.readDatabase().asLiveData()
+    private fun insertRecipes(recipesEntity: RecipesEntity) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.local.insertRecipes(recipesEntity)
+        }
 
+    /** RETROFIT */
+    var recipesResponse: MutableLiveData<NetworkResult<FoodRecipeModel>> = MutableLiveData()
+    var searchRecipesResponse : MutableLiveData<NetworkResult<FoodRecipeModel>> = MutableLiveData()
 
     fun getRecipes(queries: Map<String, String>) = viewModelScope.launch {
         getRecipesSafeCall(queries)
     }
+
+    fun getSearchRecipes(searchQueries: Map<String, String>) = viewModelScope.launch {
+        getSearchRecipesSafeCall(searchQueries)
+    }
+
 
     // check internet before hit the api
     private suspend fun getRecipesSafeCall(queries: Map<String, String>) {
@@ -37,12 +50,40 @@ class MainViewModel @Inject constructor(
                 val response = repo.remote.getRecipes(queries)
                 recipesResponse.value = handleFoodRecipesResponse(response)
 
+                /** CACHE DB*/
+                val foodRecipes = recipesResponse.value!!.data
+                if (foodRecipes != null) {
+                    offlineCacheRecipes(foodRecipes)
+                }
             } catch (e: Exception) {
                 recipesResponse.value = NetworkResult.Error("Recipes Not Found.")
             }
-        } else {
+        }
+        else {
             recipesResponse.value = NetworkResult.Error("No Internet Connection.")
         }
+    }
+
+    private suspend fun getSearchRecipesSafeCall(searchQueries: Map<String, String>) {
+        searchRecipesResponse.value = NetworkResult.Loading()
+        if (hasInternetConnection()){
+            try {
+                val response = repo.remote.searchRecipes(searchQueries)
+                searchRecipesResponse.value = handleFoodRecipesResponse(response)
+
+            }catch (e: Exception){
+                searchRecipesResponse.value = NetworkResult.Error("Not Found")
+            }
+        }else{
+            recipesResponse.value = NetworkResult.Error("No Internet Connection.")
+
+        }
+    }
+
+
+    private fun offlineCacheRecipes(foodRecipes: FoodRecipeModel) {
+        val recipesEntity = RecipesEntity(foodRecipes)
+        insertRecipes(recipesEntity)
     }
 
     // this to parse and handle response from api
@@ -72,7 +113,7 @@ class MainViewModel @Inject constructor(
     }
 
     // check internet connection
-    fun hasInternetConnection(): Boolean {
+    private fun hasInternetConnection(): Boolean {
         val connectivityManger = getApplication<Application>().getSystemService(
             Context.CONNECTIVITY_SERVICE
         ) as ConnectivityManager
