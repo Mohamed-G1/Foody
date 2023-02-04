@@ -17,6 +17,7 @@ class RecipesRowBinding {
         fun loadImageFromUrl(imageView: ImageView, imageUrl: String) {
             imageView.load(imageUrl) {
                 crossfade(600) // fade effect when loading image
+                error(R.drawable.ic_error_placeholder) // to show this when no connection
             }
         }
 
