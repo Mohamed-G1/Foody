@@ -7,14 +7,13 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.foody.BuildConfig
 import com.example.foody.data.DataStoreRepository
-import com.example.foody.utils.Constans
+import com.example.foody.data.MealAndDietType
 import com.example.foody.utils.Constans.Companion.DEFAULT_DIET_TYPE
 import com.example.foody.utils.Constans.Companion.DEFAULT_MEAL_TYPE
 import com.example.foody.utils.Constans.Companion.DEFAULT_RECIPES_NUMBER
 import com.example.foody.utils.Constans.Companion.QUERY_SEARCH
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,18 +23,39 @@ class RecipesViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ) : AndroidViewModel(application) {
     // this varibles to change request in queries
-    private var mealType = DEFAULT_MEAL_TYPE
-    private var dietType = DEFAULT_DIET_TYPE
     var networkStatus = false
     var backOnLine = false
-
     val readMealAndDietType = dataStoreRepository.readMealAndDiet
     val readBackOnLine = dataStoreRepository.readBackOnlineValue.asLiveData()
+    lateinit var mealAndDietType: MealAndDietType
 
-    fun saveMealAndDietType(mealType: String, mealTypeId: Int, dietType: String, dietTypeId: Int) =
+
+    fun saveMealAndDietType() =
         viewModelScope.launch(Dispatchers.IO) {
-            dataStoreRepository.saveMealAndDiet(mealType, mealTypeId, dietType, dietTypeId)
+            if (this@RecipesViewModel::mealAndDietType.isInitialized) {
+                dataStoreRepository.saveMealAndDiet(
+                    mealAndDietType.selectedMealType,
+                    mealAndDietType.selectedMealTypeId,
+                    mealAndDietType.selectedDietType,
+                    mealAndDietType.selectedDietTypeId
+                )
+            }
         }
+
+    /**
+     * this to if we received recipes not found then we didn't save the value of chides
+     * and stays the chides value temporoy and save it just in success in recipres fragment
+     * */
+    fun saveMealAndDietTypeTemp(
+        mealType: String,
+        mealTypeId: Int,
+        dietType: String,
+        dietTypeId: Int
+    ) {
+        mealAndDietType = MealAndDietType(
+            mealType, mealTypeId, dietType, dietTypeId
+        )
+    }
 
     private fun saveBackOnLineValue(backOnLine: Boolean) =
         viewModelScope.launch(Dispatchers.IO) {
@@ -47,21 +67,20 @@ class RecipesViewModel @Inject constructor(
         /**
          * this way to get the newest values inside our apply queries every time
          * */
-        viewModelScope.launch {
-            //collect() -> to collect values from flow
-            readMealAndDietType.collect { values ->
-                mealType = values.selectedMealType
-                dietType = values.selectedDietType
-
-            }
-        }
-
         queries["number"] = DEFAULT_RECIPES_NUMBER
         queries["apiKey"] = BuildConfig.API_KEY
-        queries["type"] = mealType
-        queries["diet"] = dietType
         queries["addRecipeInformation"] = "true"
         queries["fillIngredients"] = "true"
+
+        /**
+         * this to ensure that the MealAndType is inilaizined first*/
+        if (this@RecipesViewModel::mealAndDietType.isInitialized) {
+            queries["type"] = mealAndDietType.selectedMealType
+            queries["diet"] = mealAndDietType.selectedDietType
+        } else {
+            queries["type"] = DEFAULT_MEAL_TYPE
+            queries["diet"] = DEFAULT_DIET_TYPE
+        }
         return queries
     }
 

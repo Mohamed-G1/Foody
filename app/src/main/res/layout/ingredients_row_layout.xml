@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="4dp">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <View
+                android:id="@+id/ingredientsBackground"
+                android:layout_width="120dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ingredientsImageView"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@android:drawable/btn_star_big_on"
+                app:layout_constraintBottom_toBottomOf="@id/ingredientsBackground"
+                app:layout_constraintEnd_toEndOf="@id/ingredientsBackground"
+                app:layout_constraintStart_toStartOf="@id/ingredientsBackground"
+                app:layout_constraintTop_toTopOf="@id/ingredientsBackground" />
+
+            <TextView
+                android:id="@+id/ingredientsTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
+                android:fontFamily="@font/courgette"
+                android:text="ingredients Title"
+                android:textColor="@color/dark"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ingredientsBackground"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/ingredientsAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="100"
+                app:layout_constraintStart_toStartOf="@+id/ingredientsTitle"
+                app:layout_constraintTop_toBottomOf="@+id/ingredientsTitle" />
+
+            <TextView
+                android:id="@+id/ingredientsUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Unit"
+                app:layout_constraintBottom_toBottomOf="@+id/ingredientsAmount"
+                app:layout_constraintStart_toEndOf="@+id/ingredientsAmount"
+                app:layout_constraintTop_toTopOf="@+id/ingredientsAmount" />
+
+            <TextView
+                android:id="@+id/ingredientsConsistency"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="12dp"
+                android:text="ingredients Consistency"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ingredientsBackground"
+                app:layout_constraintTop_toBottomOf="@+id/ingredientsAmount" />
+
+            <TextView
+                android:id="@+id/ingredientsOriginal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="12dp"
+                android:text="Original"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ingredientsBackground"
+                app:layout_constraintTop_toBottomOf="@+id/ingredientsConsistency"
+                app:layout_constraintVertical_bias="0.060000002" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

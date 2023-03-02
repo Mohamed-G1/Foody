@@ -8,7 +8,6 @@
     <color name="lightGray">#F9F9F9</color>
     <color name="mediumGray">#D1D1D1</color>
     <color name="lightMediumGray">#80D1D1D1</color>
-    <color name="darkGray">#4B4B4B</color>
     <color name="dark">#313C44</color>
     <color name="darker">#151B20</color>
     <color name="black">#000000</color>
@@ -16,10 +15,37 @@
     <color name="yellow">#FFC114</color>
     <color name="green">#00C980</color>
 
-    // chips colors
+
+
+    <!-- LIGHT THEME-->
+
+    <color name="backgroundColor">@color/lightGray</color>
+    <color name="placeHolderColor">@color/mediumGray</color>
+    <color name="item_color">@color/dark</color>
+
+    // Chips Colors
     <color name="checkedChipBackgroundColor">#206200EA</color>
     <color name="chipBackgroundColor">@color/lightGray</color>
+    <color name="checkedChipTextColor">@color/colorPrimary</color>
+    <color name="chipTextColor">@color/dark</color>
 
-    <color name="checkedChipTextBackgroundColor">@color/colorPrimary</color>
-    <color name="chipTextBackgroundColor">@color/darkGray</color>
+    // CardView Colors
+    <color name="strokeColor">@color/lightMediumGray</color>
+    <color name="cardBackgroundColor">@color/white</color>
+    <color name="cardBackgroundLightColor">#206200EA</color>
+    <color name="titleColor">@color/darker</color>
+    <color name="descriptionColor">@color/dark</color>
+
+
+    // Contextual Layout Colors
+    <color name="statusBarColor">@color/colorPrimaryDark</color>
+    <color name="contextual_action_mode_color">@color/darker</color>
+    <color name="contextualActionBarColor">@color/dark</color>
+    <color name="actionBarBackgroundColor">@color/colorPrimary</color>
+
+    // Bottom Navigation View Colors
+    <color name="bottomNavBackground">@color/white</color>
+    <color name="bottomNavItemColor">@color/dark</color>
+    <color name="bottomNavItemCheckedColor">@color/colorPrimary</color>
+
 </resources>
