@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.Foody" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
@@ -6,28 +6,47 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorOnSecondary">@color/black</item>
+        <item name="actionModeBackground">@color/contextual_action_mode_color</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="actionBarStyle">@style/CustomActionBarStyle</item>
+        <item name="bottomNavigationStyle">@style/CustomBottomNavigationView</item>
+    </style>
+    
+    
+    // Splash Screen Style
+    <style name="SplashScreenStyle" parent="Theme.SplashScreen">
+         <item name="windowSplashScreenBackground">@drawable/splash_screen</item>
+        <item name="windowSplashScreenAnimationDuration">200</item>
+        <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item> // this for transparent the status
+        <item name="android:windowTranslucentNavigation">true</item> // this for transparent the down mobile bar
     </style>
 
-<!--    custom style for chips-->
+    // Action Bar style
+    <style name="CustomActionBarStyle" parent="Widget.MaterialComponents.ActionBar.Primary">
+        <item name="background">@color/actionBarBackgroundColor</item>
+
+    </style>
+
+
+   // custom style for chips
     <style name="CustomStyleChips" parent="Widget.MaterialComponents.Chip.Filter">
         <item name="chipBackgroundColor">@color/chip_background_color</item>
         <item name="android:textColor">@color/chip_text_color</item>
         <item name="checkedIconTint">@color/chip_text_color</item>
     </style>
 
-<!--    style for tool bar for details activity-->
+  // style for tool bar for details activity
     <style name="DetailsActivityStyle" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlNormal">@color/white</item>
-        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:statusBarColor">@color/statusBarColor</item>
     </style>
 
-<!--    custom style for tab layouts-->
+//   custom style for tab layouts-->
     <style name="CustomTabLayoutStyle" parent="Widget.Design.TabLayout">
         <item name="background">@color/colorPrimary</item>
         <item name="tabIndicatorColor">@color/white</item>
@@ -36,8 +55,17 @@
 
     </style>
 
-<!--    custom style foe tap layout text-->
+//   custom style foe tap layout text-->
     <style name="CustomTapTextStyle" parent="TextAppearance.Design.Tab">
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    // custom style for bottom navigation
+    <style name="CustomBottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="backgroundTint">@color/bottomNavBackground</item>
+        <item name="itemIconTint">@color/bottom_nav_item_color</item>
+        <item name="itemTextColor">@color/bottom_nav_item_color</item>
+
+
     </style>
 </resources>

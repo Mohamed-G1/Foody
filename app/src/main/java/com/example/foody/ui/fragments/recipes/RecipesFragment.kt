@@ -3,11 +3,11 @@ package com.example.foody.ui.fragments.recipes
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -16,13 +16,15 @@ import com.example.foody.R
 import com.example.foody.adapter.RecipesAdapter
 import com.example.foody.databinding.FragmentRecipesBinding
 import com.example.foody.ui.MainViewModel
-import com.example.foody.ui.fragments.recipes.bottomSheet.RecipesBottomSheet
 import com.example.foody.utils.NetworkListener
 import com.example.foody.utils.NetworkResult
 import com.example.foody.utils.observeOnce
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
+
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
     private val args by navArgs<RecipesFragmentArgs>()
@@ -36,8 +38,8 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-        recipesViewModel = ViewModelProvider(requireActivity()).get(RecipesViewModel::class.java)
+        mViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        recipesViewModel = ViewModelProvider(requireActivity())[RecipesViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -49,13 +51,21 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
         binding.lifecycleOwner = this // bez we'll use live data in this fragment
         binding.mainViewModel = mViewModel
 
-        setHasOptionsMenu(true)
-
-        setupRecyclerView()
-//        requestApiData()
+        initMenuBar()
         observeOnBackOnlineValue()
+        setupRecyclerView()
+        initViewClicks()
+        networkListener()
 
-        lifecycleScope.launch {
+        return binding.root
+    }
+
+    private fun networkListener(){
+        /**
+         * launchWhenStarted ->  stateflow is working on all the screens of the app so
+         * to get the value from the stateflow just when the fragment started not all the app
+         * */
+        lifecycleScope.launchWhenStarted {
             val networkListener = NetworkListener()
             networkListener.checkNetworkAvailability(requireContext()).collect { status ->
                 Log.d("NetworkStatus", status.toString())
@@ -64,7 +74,9 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
                 readDatabase()
             }
         }
+    }
 
+    private fun initViewClicks(){
         binding.recipesFab.setOnClickListener {
             if (recipesViewModel.networkStatus) {
                 findNavController().navigate(R.id.action_recipesFragment_to_recipesBottomSheet)
@@ -72,11 +84,10 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
                 recipesViewModel.showNetworkStatus()
             }
         }
-        return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+
+    private fun initMenuBar() {
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -92,7 +103,6 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -135,8 +145,8 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun setupRecyclerView() {
-        binding.shimmerRecyclerView.adapter = mAdapter
-        binding.shimmerRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recipesRecyclerView.adapter = mAdapter
+        binding.recipesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         showShimmer()
     }
 
@@ -148,10 +158,10 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private fun readDatabase() {
         lifecycleScope.launch {
-            mViewModel.readRecipes.observeOnce(viewLifecycleOwner, Observer { database ->
+            mViewModel.readRecipes.observeOnce(this@RecipesFragment, Observer { database ->
                 if (database.isNotEmpty() && !args.backFromBottomSheet) {
                     Log.d("RecipeFragment", "readDatabase")
-                    mAdapter.setData(database[0].foodRecipeModel)
+                    mAdapter.setData(database.first().foodRecipeModel)
                     hideShimmer()
                 } else {
                     requestApiData()
@@ -168,6 +178,8 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
                 is NetworkResult.Success -> {
                     hideShimmer()
                     response.data?.let { mAdapter.setData(it) }
+                    // todo to save the chides values just if in success
+                    recipesViewModel.saveMealAndDietType()
                 }
 
                 is NetworkResult.Error -> {
@@ -193,7 +205,7 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
         lifecycleScope.launch {
             mViewModel.readRecipes.observe(viewLifecycleOwner, Observer { database ->
                 if (database.isNotEmpty()) {
-                    mAdapter.setData(database[0].foodRecipeModel)
+                    mAdapter.setData(database.first().foodRecipeModel)
                 }
             })
         }
@@ -201,11 +213,19 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
 
 
     private fun showShimmer() {
-        binding.shimmerRecyclerView.showShimmer()
+        binding.apply {
+            shimmerFrameLayout.startShimmer()
+            shimmerFrameLayout.visibility = View.VISIBLE
+            recipesRecyclerView.visibility = View.GONE
+        }
     }
 
     private fun hideShimmer() {
-        binding.shimmerRecyclerView.hideShimmer()
+        binding.apply {
+            shimmerFrameLayout.stopShimmer()
+            shimmerFrameLayout.visibility = View.GONE
+            recipesRecyclerView.visibility = View.VISIBLE
+        }
     }
 
 
@@ -214,8 +234,17 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
      * */
     override fun onDestroy() {
         super.onDestroy()
+        mViewModel.recyclerViewState =
+            binding.recipesRecyclerView.layoutManager?.onSaveInstanceState()
         _binding = null
     }
 
+    override fun onResume() {
+        super.onResume()
+        /** this very useful when u want to navigate and return at the same recycler view position*/
+        if (mViewModel.recyclerViewState != null) {
+            binding.recipesRecyclerView.layoutManager?.onRestoreInstanceState(mViewModel.recyclerViewState)
+        }
+    }
 
 }

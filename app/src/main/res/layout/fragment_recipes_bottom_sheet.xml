@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/cardBackgroundColor"
         tools:context=".ui.fragments.recipes.bottomSheet.RecipesBottomSheet">
 
 
@@ -21,7 +21,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:text="@string/meal_type"
-            android:textColor="@color/dark"
+            android:textColor="@color/titleColor"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -177,7 +177,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:textSize="18sp"
-            android:textColor="@color/dark"
+            android:textColor="@color/titleColor"
             android:textStyle="bold"
             android:text="@string/diet_type"
             app:layout_constraintStart_toStartOf="parent"
@@ -291,7 +291,7 @@
             android:layout_marginBottom="24dp"
             android:text="@string/apply"
             android:textAllCaps="false"
-            android:backgroundTint="@color/green"
+            android:backgroundTint="@color/colorPrimary"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:textSize="18sp"

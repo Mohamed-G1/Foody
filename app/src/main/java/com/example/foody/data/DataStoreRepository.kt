@@ -1,8 +1,10 @@
 package com.example.foody.data
 
 import android.content.Context
-import androidx.datastore.DataStore
+import androidx.datastore.core.DataStore
+import androidx.datastore.dataStoreFile
 import androidx.datastore.preferences.*
+import androidx.datastore.preferences.core.*
 import com.example.foody.utils.Constans.Companion.DEFAULT_DIET_TYPE
 import com.example.foody.utils.Constans.Companion.DEFAULT_MEAL_TYPE
 import com.example.foody.utils.Constans.Companion.PREFERENCES_BACK_ONLINE
@@ -11,28 +13,31 @@ import com.example.foody.utils.Constans.Companion.PREFERENCES_DIET_TYPE_ID
 import com.example.foody.utils.Constans.Companion.PREFERENCES_MEAL_TYPE
 import com.example.foody.utils.Constans.Companion.PREFERENCES_MEAL_TYPE_ID
 import com.example.foody.utils.Constans.Companion.PREFERENCES_NAME
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import okio.IOException
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@ActivityRetainedScoped
+private val Context.dataStore by preferencesDataStore(PREFERENCES_NAME)
+
+@ViewModelScoped
 class DataStoreRepository @Inject constructor(@ApplicationContext private val context: Context) {
     private object PreferencesKeys {
-        val selectedMealType = preferencesKey<String>(PREFERENCES_MEAL_TYPE)
-        val selectedMealTypeId = preferencesKey<Int>(PREFERENCES_MEAL_TYPE_ID)
+        val selectedMealType = stringPreferencesKey(PREFERENCES_MEAL_TYPE)
+        val selectedMealTypeId = intPreferencesKey(PREFERENCES_MEAL_TYPE_ID)
 
-        val selectedDietType = preferencesKey<String>(PREFERENCES_DIET_TYPE)
-        val selectedDietTypeId = preferencesKey<Int>(PREFERENCES_DIET_TYPE_ID)
-        val backOnLine = preferencesKey<Boolean>(PREFERENCES_BACK_ONLINE)
+        val selectedDietType = stringPreferencesKey(PREFERENCES_DIET_TYPE)
+        val selectedDietTypeId = intPreferencesKey(PREFERENCES_DIET_TYPE_ID)
+        val backOnLine = booleanPreferencesKey(PREFERENCES_BACK_ONLINE)
     }
 
-    private val dataStore: DataStore<Preferences> = context.createDataStore(
-        name = PREFERENCES_NAME
-    )
+    private val dataStore: DataStore<Preferences> = context.dataStore
 
     suspend fun saveMealAndDiet(
         mealType: String,
