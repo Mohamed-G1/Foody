@@ -50,5 +50,5 @@ you can see the API documentation here: https://spoonacular.com/food-api/docs
 
 
 
-![68747470733a2f2f692e706f7374696d672e63632f36707430475435342f5468756d626e61696c2d312e706e67](https://user-images.githubusercontent.com/75777023/224485313-68067e60-3345-4d4f-9b25-f3e951a7a177.png)
+
 
